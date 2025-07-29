@@ -12,7 +12,7 @@ interface PostLayoutProps {
 export async function generateMetadata({
   params,
 }: PostLayoutProps): Promise<Metadata> {
-  const postId = parseInt(params.id);
+  const postId = parseInt(params?.id);
 
   // Check if the postId is a valid one
   if (isNaN(postId)) {
