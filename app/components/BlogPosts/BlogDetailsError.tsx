@@ -1,9 +1,9 @@
+import Link from "next/link";
 import React from "react";
 
-export default function BlogPostsError({ error }: { error: string }) {
+const BlogDetailsError = ({ error }: { error: string }) => {
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-8">Blog Posts</h1>
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="bg-red-50 border border-red-200 rounded-md p-6">
         <div className="flex">
           <div className="flex-shrink-0">
@@ -21,14 +21,24 @@ export default function BlogPostsError({ error }: { error: string }) {
           </div>
           <div className="ml-3">
             <h3 className="text-sm font-medium text-red-800">
-              Error loading posts
+              Error loading post
             </h3>
             <div className="mt-2 text-sm text-red-700">
-              <p>{error}</p>
+              <p>{error || "Post not found"}</p>
+            </div>
+            <div className="mt-4">
+              <Link
+                href="/posts"
+                className="bg-red-100 text-red-800 px-4 py-2 rounded-md text-sm font-medium hover:bg-red-200 transition-colors"
+              >
+                Back to Posts
+              </Link>
             </div>
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default BlogDetailsError;

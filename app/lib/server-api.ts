@@ -16,6 +16,14 @@ export interface User {
   email: string;
 }
 
+export interface Comment {
+  postId: number;
+  id: number;
+  name: string;
+  email: string;
+  body: string;
+}
+
 // Server-side API service class
 export class ServerBlogApiService {
   private static async fetchData<T>(url: string): Promise<T> {
@@ -43,6 +51,26 @@ export class ServerBlogApiService {
     }
   }
 
+  // Get single blog post by ID
+  static async getBlogPost(id: number): Promise<BlogPost> {
+    try {
+      return await this.fetchData<BlogPost>(`/posts/${id}`);
+    } catch (error) {
+      console.error("Error fetching post:", error);
+      throw new Error("Failed to fetch blog post");
+    }
+  }
+
+  // Get user by ID
+  static async getUser(userId: number): Promise<User> {
+    try {
+      return await this.fetchData<User>(`/users/${userId}`);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      throw new Error("Failed to fetch user");
+    }
+  }
+
   // Get all users
   static async getUsers(): Promise<User[]> {
     try {
@@ -50,6 +78,16 @@ export class ServerBlogApiService {
     } catch (error) {
       console.error("Error fetching users:", error);
       throw new Error("Failed to fetch users");
+    }
+  }
+
+  // Get comments for a specific post
+  static async getComments(postId: number): Promise<Comment[]> {
+    try {
+      return await this.fetchData<Comment[]>(`/comments?postId=${postId}`);
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+      throw new Error("Failed to fetch comments");
     }
   }
 
@@ -68,6 +106,26 @@ export class ServerBlogApiService {
     } catch (error) {
       console.error("Error fetching posts with users:", error);
       throw new Error("Failed to fetch posts with user data");
+    }
+  }
+
+  // Get single post with user and comments
+  static async getPostWithUserAndComments(postId: number): Promise<{
+    post: BlogPost;
+    user: User;
+    comments: Comment[];
+  }> {
+    try {
+      const post = await this.getBlogPost(postId);
+      const [user, comments] = await Promise.all([
+        this.getUser(post.userId),
+        this.getComments(postId),
+      ]);
+
+      return { post, user, comments };
+    } catch (error) {
+      console.error("Error fetching post with user and comments:", error);
+      throw new Error("Failed to fetch post with user and comments");
     }
   }
 }

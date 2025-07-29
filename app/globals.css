@@ -24,3 +24,21 @@
     overflow: hidden;
   }
 }
+
+@layer components {
+  .prose {
+    @apply text-gray-700 leading-relaxed;
+  }
+
+  .prose-lg {
+    @apply text-lg;
+  }
+
+  .prose p {
+    @apply mb-4;
+  }
+
+  .prose p:last-child {
+    @apply mb-0;
+  }
+}
