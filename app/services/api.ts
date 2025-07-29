@@ -1,16 +1,18 @@
 import axiosInstance from "../lib/axios";
 
-// Types for blog data
+// Types for blog data from JSONPlaceholder
 export interface BlogPost {
+  userId: number;
   id: number;
   title: string;
-  content: string;
-  excerpt: string;
-  author: string;
-  publishedAt: string;
-  slug: string;
-  tags: string[];
-  featuredImage?: string;
+  body: string;
+}
+
+export interface User {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
 }
 
 export interface ApiResponse<T> {
@@ -65,49 +67,58 @@ export class BlogApiService {
     }
   }
 
-  // Get all blog posts
+  // Get all blog posts from JSONPlaceholder
   static async getBlogPosts(): Promise<BlogPost[]> {
     try {
-      const response = await axiosInstance.get<ApiResponse<BlogPost[]>>(
-        "/api/posts"
-      );
-      return response.data.data;
+      const response = await axiosInstance.get<BlogPost[]>("/posts");
+      return response.data;
     } catch (error) {
       this.handleError(error);
     }
   }
 
-  // Get single blog post by slug
-  static async getBlogPost(slug: string): Promise<BlogPost> {
+  // Get single blog post by ID
+  static async getBlogPost(id: number): Promise<BlogPost> {
     try {
-      const response = await axiosInstance.get<ApiResponse<BlogPost>>(
-        `/api/posts/${slug}`
-      );
-      return response.data.data;
+      const response = await axiosInstance.get<BlogPost>(`/posts/${id}`);
+      return response?.data;
     } catch (error) {
       this.handleError(error);
     }
   }
 
-  // Get featured blog posts
-  static async getFeaturedPosts(limit: number = 3): Promise<BlogPost[]> {
+  //   // Get user by ID
+  //   static async getUser(userId: number): Promise<User> {
+  //     try {
+  //       const response = await axiosInstance.get<User>(`/users/${userId}`);
+  //       return response.data;
+  //     } catch (error) {
+  //       this.handleError(error);
+  //     }
+  //   }
+
+  // Get all users
+  static async getUsers(): Promise<User[]> {
     try {
-      const response = await axiosInstance.get<ApiResponse<BlogPost[]>>(
-        `/api/posts/featured?limit=${limit}`
-      );
-      return response.data.data;
+      const response = await axiosInstance.get<User[]>("/users");
+      return response.data;
     } catch (error) {
       this.handleError(error);
     }
   }
 
-  // Search blog posts
-  static async searchPosts(query: string): Promise<BlogPost[]> {
+  // Get posts with user data
+  static async getPostsWithUsers(): Promise<(BlogPost & { user: User })[]> {
     try {
-      const response = await axiosInstance.get<ApiResponse<BlogPost[]>>(
-        `/api/posts/search?q=${encodeURIComponent(query)}`
-      );
-      return response.data.data;
+      const [posts, users] = await Promise.all([
+        this.getBlogPosts(),
+        this.getUsers(),
+      ]);
+
+      return posts.map((post) => ({
+        ...post,
+        user: users.find((user) => user?.id === post?.userId)!,
+      }));
     } catch (error) {
       this.handleError(error);
     }

@@ -30,10 +30,10 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/blog"
+                  href="/posts"
                   className="text-gray-600 hover:text-gray-900 transition-colors"
                 >
-                  Blog
+                  Posts
                 </Link>
               </li>
               <li>
