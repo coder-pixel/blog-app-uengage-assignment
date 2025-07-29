@@ -1,28 +1,28 @@
-import React from "react";
+import { Comment } from "@/app/lib/server-api";
 
-const PostCommentSection = ({
+interface PostCommentSectionProps {
+  comments?: Comment[];
+}
+
+export default function PostCommentSection({
   comments,
-}: {
-  comments: {
-    id: number;
-    name: string;
-    email: string;
-    body: string;
-  }[];
-}) => {
+}: PostCommentSectionProps) {
+  const commentCount = comments?.length || 0;
+  const hasComments = comments && comments.length > 0;
+
   return (
     <section className="border-t border-gray-200 pt-8">
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-gray-900 mb-2">
-          Comments ({comments?.length || 0})
+          Comments ({commentCount})
         </h2>
         <p className="text-gray-600">Join the discussion about this post</p>
       </div>
 
-      {comments?.length > 0 ? (
+      {hasComments ? (
         <div className="space-y-6">
           {comments?.map((comment) => (
-            <div key={comment?.id} className="bg-gray-50 rounded-lg p-6">
+            <div key={comment.id} className="bg-gray-50 rounded-lg p-6">
               <div className="flex items-start space-x-3">
                 <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
                   <span className="text-green-600 text-sm font-medium">
@@ -73,6 +73,4 @@ const PostCommentSection = ({
       )}
     </section>
   );
-};
-
-export default PostCommentSection;
+}
